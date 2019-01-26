@@ -1,0 +1,49 @@
+{
+	"name": "EMap",
+	"version": "1.0.3",
+	"author": [
+		"[[User:Kasiya|Ben Potter]] and [[User:Brad|Brad]]"
+	],
+	"url": "https://github.com/atitd-community/mediawiki-emap",
+	"descriptionmsg": "Adds <emap> tag",
+	"license-name": "MIT",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.25.0"
+	},
+	"AutoloadClasses": {
+		"EMap": "EMap_body.php"
+	},
+	"ExtensionMessagesFiles": {
+		"EMap": "EMap.magic.php"
+	},
+	"ResourceModules": {
+		"ext.emap.styles": {
+			"styles": "ext.emap.leaflet.css",
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.emap": {
+			"scripts": [
+				"ext.emap.leaflet.js",
+				"ext.emap.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "EMap/modules"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": "EMap::onParserSetup",
+		"BeforePageDisplay": "EMap::onBeforePageDisplay",
+		"ParserAfterTidy": "EMap::onParserAfterTidy"
+	},
+	"manifest_version": 1
+}
