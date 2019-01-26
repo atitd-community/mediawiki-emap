@@ -8,8 +8,10 @@ Installation
 
 ```php
 wfLoadExtension( 'EMap' );
+$eMapBasePath = 'https://static.atitd.wiki';
 ```
 
+  * Update the value of `$eMapBasePath` as appropriate with the URL hosting the static map and marker images.
   * **Done** — Navigate to Special:Version on your wiki to verify that the extension is successfully installed.
 
 Note
