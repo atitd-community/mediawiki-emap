@@ -139,7 +139,7 @@ class EMap {
 		global $wgScriptPath;
 			$out->addModuleStyles('ext.emap.styles');
 			$out->addScriptFile($wgScriptPath .'/extensions/EMap/modules/ext.emap.leaflet.js');
-			$out->addScriptFile($wgScriptPath .'/extensions/EMap/modules/ext.emap.js');
+			$out->addScriptFile($wgScriptPath .'/extensions/EMap/modules/ext.emap.babel.js');
 			//$out->addModuleStyles('ext.emap.styles');
 			//$out->addModules('ext.emap');
 			//$out->addInlineScript($script);

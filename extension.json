@@ -1,6 +1,6 @@
 {
 	"name": "EMap",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"author": [
 		"[[User:Kasiya|Ben Potter]] and [[User:Brad|Brad]]"
 	],
@@ -28,7 +28,7 @@
 		"ext.emap": {
 			"scripts": [
 				"ext.emap.leaflet.js",
-				"ext.emap.js"
+				"ext.emap.babel.js"
 			],
 			"targets": [
 				"mobile",
