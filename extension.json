@@ -7,7 +7,7 @@
 	"url": "https://github.com/atitd-community/mediawiki-emap",
 	"descriptionmsg": "Adds <emap> tag",
 	"license-name": "MIT",
-	"type": "parserhook",
+	"type": "atitd",
 	"requires": {
 		"MediaWiki": ">= 1.25.0"
 	},
