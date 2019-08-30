@@ -213,6 +213,7 @@ function () {
       var json = "https://atitd.bpuk.org/api/t8";
 
       if (this.tale > 3) {
+        if (this.tale == '9') json = "https://atitd.bpuk.org/api/t9";
         if (this.tale == '8') json = "https://atitd.bpuk.org/api/t8";
         if (this.tale == '6' || this.tale == '7') json = "/t7wiki/maps/t7.json";
         if (this.tale == '5') json = "/t7wiki/maps/t5.json";
