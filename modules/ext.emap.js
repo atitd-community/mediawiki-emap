@@ -56,6 +56,20 @@ class eMap {
 				}});
 		
 		this.regioncontrol = new EgyptMouseRegionControl();
+
+		// Create secondary Region Control at bottom left
+		var EgyptMouseSecondRegionControl = L.Control.extend({ options: { position: 'bottomleft' },
+				onAdd: function (mapID) {
+					var container = L.DomUtil.create('input', 'region'+ID);
+					container.setAttribute("style","width: 114px;text-align: center; border: 1px solid black;");
+					container.value = "Hinterlands";
+					container.id = "region"+ID;
+					container.title = "Region Name at Mouse Position";
+					container.onclick=function(){document.getElementById("region"+ID).blur()}; // REMOVE?
+					return container;
+				}});
+
+		this.secondregioncontrol = new EgyptMouseSecondRegionControl();
 		
 		// Create, but do not add, Position Control
 		var EgyptMousePositionControl = L.Control.extend({ options: { position: 'topright' },
@@ -98,7 +112,53 @@ class eMap {
 
 	    	return container;
 		}});
+
 		this.positioncontrol = new EgyptMousePositionControl();
+		
+		// Create secondary Position Control at bottom left
+		var EgyptMouseSecondPositionControl = L.Control.extend({ options: { position: 'bottomleft' },
+			onAdd: function (mapID) {
+				var container = L.DomUtil.create('input', 'secondmousepos'.ID);
+				container.setAttribute("style","width: 114px;text-align: center; border: 1px solid black; cursor:pointer;");
+				container.value = "0, 0";
+				container.id = "secondmousepos"+ID;
+				container.title = "Mouse Position (click to add marker)";
+				container.onclick=function(){ 
+					document.getElementById("secondmousepos"+ID).blur();
+					var coords=prompt("Please enter coords","");
+					var n = coords.match(/^(\-?\d+),\s*(\-?\d+)$/);
+					if (IsValidCoord(Number(n[2]),Number(n[1])) == true) {
+						var ll = CoordToLatLng(Number(n[1]),Number(n[2]));
+						mapID.panTo(ll);
+						icon = icons.replace("{label}","location");
+						var pop = "<p><b>Location: "+n[1]+", "+n[2]+"</b><br /><small>Click Marker to Remove</small></p>";
+
+						var mkr = L.marker(ll, {
+							icon: L.icon({iconSize: [32,37],
+							iconAnchor: [16,37],
+							iconUrl: icon}
+						)}).addTo(mapID);
+
+						mkr.on('click', function(e){ 
+						mapID.closePopup();
+						mapID.removeLayer(mkr);
+						});
+
+						mkr.on('mouseover mousemove', function(e){
+						var hover_bubble = new L.Rrose({ offset: new L.Point(0,-30), closeButton: false, autoPan: false })
+							.setContent(pop)
+							.setLatLng(e.latlng)
+							.openOn(mapID);
+						});
+						mkr.on('mouseout', function(e){ mapID.closePopup() });
+                    }
+                  };
+
+	    	return container;
+		}});
+
+		this.secondpositioncontrol = new EgyptMouseSecondPositionControl();
+
 		// Create and bind update function for Position and Region controls
 		function onMouseMove(e) {
 		    var p = self.LL2C(e.latlng);
@@ -106,6 +166,7 @@ class eMap {
 		    if (IsValidCoord(p.x, p.y) == true) {
 				if (self.showposition) {
 					document.getElementById("mousepos"+ID).value = p.y.toFixed(0) + ', ' + p.x.toFixed(0);
+					document.getElementById("secondmousepos"+ID).value = p.y.toFixed(0) + ', ' + p.x.toFixed(0);
                 }
             } 
 
@@ -204,6 +265,8 @@ class eMap {
                     layer.on('mouseover', function (e) {
 					if (self.regioncontrol._container.value != layer.feature.properties.name)
 						self.regioncontrol._container.value = layer.feature.properties.name;
+					if (self.secondregioncontrol._container.value != layer.feature.properties.name)
+						self.secondregioncontrol._container.value = layer.feature.properties.name;
                     });
                 }
 			}
@@ -232,6 +295,8 @@ class eMap {
 		this.layerc = typeof layer !== 'undefined' ? layer : 1;
 		position ? this.mapID.addControl(this.positioncontrol) : this.mapID.removeControl(this.positioncontrol);
 		region ? this.mapID.addControl(this.regioncontrol) : this.mapID.removeControl(this.regioncontrol);
+		region ? this.mapID.addControl(this.secondregioncontrol) : this.mapID.removeControl(this.secondregioncontrol);
+		position ? this.mapID.addControl(this.secondpositioncontrol) : this.mapID.removeControl(this.secondpositioncontrol);
 		fullscreen ? this.mapID.addControl(this.fullscreencontrol) : this.mapID.removeControl(this.fullscreencontrol);
 		layer ? this.mapID.addControl(this.layerscontrol) : this.mapID.removeControl(this.layerscontrol);
 		measure ? this.mapID.addControl(this.mapID.measureControl) : this.mapID.removeControl(this.mapID.measureControl);
