@@ -17,7 +17,7 @@ class EMap {
 
         public static function renderEMap( $input, $params, $parser, $frame ) {
 
-			$parser->disableCache();
+			$parser->getOutput()->updateCacheExpiry();
 			global $eMapBasePath;
 			$mapID = "map_" . self::$mapIdNum;
 
