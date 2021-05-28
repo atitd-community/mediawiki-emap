@@ -1,43 +1,29 @@
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return !!right[Symbol.hasInstance](left); } else { return left instanceof right; } }
-
-function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function CoordToLatLng(x, y, tale) {
-  tale = typeof tale !== 'undefined' ? tale : 8;
+  tale = typeof tale !== 'undefined' ? tale : 10;
   var mapy = 0 - 0.015625 * (8192 - y);
   var mapx = 0.015625 * ((tale < 6 ? 7168 : 3068) + x);
   return new L.latLng(mapy, mapx);
 }
 
 function LatLngToCoord(ll, tale) {
-  tale = typeof tale !== 'undefined' ? tale : 8;
+  tale = typeof tale !== 'undefined' ? tale : 10;
   var mapy = ll.lat / 0.015625 + 8192;
   var mapx = ll.lng / 0.015625 - (tale < 6 ? 7168 : 3068);
   return new L.Point(mapy, mapx);
 }
 
-var eMap =
-/*#__PURE__*/
-function () {
-  function eMap(mapID, ID, tileset, minzoom, maxzoom, tale, attrib) {
-    _classCallCheck(this, eMap);
-
+class eMap {
+  constructor(mapID, ID, tileset, minzoom, maxzoom, tale, attrib) {
     minzoom = typeof minzoom !== 'undefined' ? minzoom : 1;
     maxzoom = typeof maxzoom !== 'undefined' ? maxzoom : 8;
-    attrib = typeof attrib !== 'undefined' ? attrib : "(c) Desert Nomad Games 2019";
+    attrib = typeof attrib !== 'undefined' ? attrib : "(c) Desert Nomad Games 2021";
     this.mapID = typeof mapID !== 'undefined' ? mapID : 1;
     var self = this;
     this.panes = [];
     this.dlayer = "";
-    this.tale = typeof tale !== 'undefined' ? tale : 8;
+    this.tale = typeof tale !== 'undefined' ? tale : 10;
     this.tileset = typeof tileset !== 'undefined' ? tileset : "/t7wiki/maps/tale8/{z}/{x}/{y}.png";
     L.tileLayer(this.tileset, {
       maxZoom: maxzoom,
@@ -60,7 +46,7 @@ function () {
       options: {
         position: 'topright'
       },
-      onAdd: function onAdd(mapID) {
+      onAdd: function (mapID) {
         var container = L.DomUtil.create('input', 'region' + ID);
         container.setAttribute("style", "width: 114px;text-align: center; border: 1px solid black;");
         container.value = "Hinterlands";
@@ -81,7 +67,7 @@ function () {
       options: {
         position: 'bottomleft'
       },
-      onAdd: function onAdd(mapID) {
+      onAdd: function (mapID) {
         var container = L.DomUtil.create('input', 'region' + ID);
         container.setAttribute("style", "width: 114px;text-align: center; border: 1px solid black;");
         container.value = "Hinterlands";
@@ -102,7 +88,7 @@ function () {
       options: {
         position: 'topright'
       },
-      onAdd: function onAdd(mapID) {
+      onAdd: function (mapID) {
         var container = L.DomUtil.create('input', 'mousepos'.ID);
         container.setAttribute("style", "width: 114px;text-align: center; border: 1px solid black; cursor:pointer;");
         container.value = "0, 0";
@@ -152,7 +138,7 @@ function () {
       options: {
         position: 'bottomleft'
       },
-      onAdd: function onAdd(mapID) {
+      onAdd: function (mapID) {
         var container = L.DomUtil.create('input', 'secondmousepos'.ID);
         container.setAttribute("style", "width: 114px;text-align: center; border: 1px solid black; cursor:pointer;");
         container.value = "0, 0";
@@ -213,376 +199,352 @@ function () {
     mapID.on('mousemove', onMouseMove);
   }
 
-  _createClass(eMap, [{
-    key: "addPane",
-    value: function addPane(name, zlevel, opacity) {
-      opacity = typeof opacity !== 'undefined' ? opacity : 1;
-      zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
-      if (name == undefined) return true;
+  addPane(name, zlevel, opacity) {
+    opacity = typeof opacity !== 'undefined' ? opacity : 1;
+    zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
+    if (name == undefined) return true;
 
-      if (this.mapID.getPane(name) == undefined) {
-        this.mapID.createPane(name);
-        this.mapID.getPane(name).style.opacity = opacity;
-        this.mapID.getPane(name).style.zIndex = zlevel;
-        this.panes.push({
-          name: name,
-          layer: L.layerGroup().addTo(this.mapID)
-        });
-        this.layerscontrol.addOverlay(this.panes.find(function (obj) {
-          return obj.name == name;
-        }).layer, name);
-      }
+    if (this.mapID.getPane(name) == undefined) {
+      this.mapID.createPane(name);
+      this.mapID.getPane(name).style.opacity = opacity;
+      this.mapID.getPane(name).style.zIndex = zlevel;
+      this.panes.push({
+        name: name,
+        layer: L.layerGroup().addTo(this.mapID)
+      });
+      this.layerscontrol.addOverlay(this.panes.find(function (obj) {
+        return obj.name == name;
+      }).layer, name);
     }
-  }, {
-    key: "hidePane",
-    value: function hidePane(name) {
-      this.mapID.getPane(name).style.display = 'none';
-      console.log("hide pane");
-      console.log(this.mapID.getPane(name));
+  }
+
+  hidePane(name) {
+    this.mapID.getPane(name).style.display = 'none';
+    console.log("hide pane");
+    console.log(this.mapID.getPane(name));
+  }
+
+  showPane(name) {
+    this.mapID.getPane(name).style.display = 'block';
+  }
+
+  setdPane(name, zlevel, opacity) {
+    console.log("setdPane(" + name + "," + zlevel + "," + opacity + ")");
+    opacity = typeof opacity !== 'undefined' ? opacity : 1;
+    zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
+
+    if (name != undefined) {
+      if (this.mapID.getPane(name) == undefined) this.addPane(name, zlevel, opacity);
+      this.dpane = name;
+      this.dlayer = this.panes.find(function (obj) {
+        return obj.name == name;
+      }).layer;
+      this.mapID.getPane(name).style.opacity = opacity;
+      this.mapID.getPane(name).style.zIndex = zlevel;
     }
-  }, {
-    key: "showPane",
-    value: function showPane(name) {
-      this.mapID.getPane(name).style.display = 'block';
+  }
+
+  setmPane(name, zlevel, opacity) {
+    opacity = typeof opacity !== 'undefined' ? opacity : 1;
+    zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
+
+    if (name != undefined) {
+      if (this.mapID.getPane(name) == undefined) this.addPane(name, zlevel, opacity);
+      this.mpane = name;
+      this.mlayer = this.panes.find(function (obj) {
+        return obj.name == name;
+      }).layer;
     }
-  }, {
-    key: "setdPane",
-    value: function setdPane(name, zlevel, opacity) {
-      console.log("setdPane(" + name + "," + zlevel + "," + opacity + ")");
-      opacity = typeof opacity !== 'undefined' ? opacity : 1;
-      zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
+  }
 
-      if (name != undefined) {
-        if (this.mapID.getPane(name) == undefined) this.addPane(name, zlevel, opacity);
-        this.dpane = name;
-        this.dlayer = this.panes.find(function (obj) {
-          return obj.name == name;
-        }).layer;
-        this.mapID.getPane(name).style.opacity = opacity;
-        this.mapID.getPane(name).style.zIndex = zlevel;
-      }
-    }
-  }, {
-    key: "setmPane",
-    value: function setmPane(name, zlevel, opacity) {
-      opacity = typeof opacity !== 'undefined' ? opacity : 1;
-      zlevel = typeof zlevel !== 'undefined' ? zlevel : 400;
+  createRegions() {
+    if (this.dpane != undefined) var prevpane = this.dpane;else var prevpane = 'overlay';
+    this.setdPane('regions', 250, 0.75);
+    var self = this;
+    var json = "https://atitd.bpuk.org/api/t10";
 
-      if (name != undefined) {
-        if (this.mapID.getPane(name) == undefined) this.addPane(name, zlevel, opacity);
-        this.mpane = name;
-        this.mlayer = this.panes.find(function (obj) {
-          return obj.name == name;
-        }).layer;
-      }
-    }
-  }, {
-    key: "createRegions",
-    value: function createRegions() {
-      if (this.dpane != undefined) var prevpane = this.dpane;else var prevpane = 'overlay';
-      this.setdPane('regions', 250, 0.75);
-      var self = this;
-      var json = "https://atitd.bpuk.org/api/t8";
+    if (this.tale > 3) {
+      if (this.tale == '10') json = "https://atitd.bpuk.org/api/t10";
+      if (this.tale == '9') json = "https://atitd.bpuk.org/api/t9";
+      if (this.tale == '8') json = "https://atitd.bpuk.org/api/t8";
+      if (this.tale == '6' || this.tale == '7') json = "/t7wiki/maps/t7.json";
+      if (this.tale == '5') json = "/t7wiki/maps/t5.json";
+      if (this.tale == '4') json = "/t7wiki/maps/t4.json";
+      var geojsonLayer = L.geoJSON.ajax(json, {
+        pane: 'regions',
+        style: function (feature) {
+          if (feature.properties.perm == "true") var opac = 0.5;else var opac = 0.25;
 
-      if (this.tale > 3) {
-        if (this.tale == '9') json = "https://atitd.bpuk.org/api/t9";
-        if (this.tale == '8') json = "https://atitd.bpuk.org/api/t8";
-        if (this.tale == '6' || this.tale == '7') json = "/t7wiki/maps/t7.json";
-        if (this.tale == '5') json = "/t7wiki/maps/t5.json";
-        if (this.tale == '4') json = "/t7wiki/maps/t4.json";
-        var geojsonLayer = L.geoJSON.ajax(json, {
-          pane: 'regions',
-          style: function style(feature) {
-            if (feature.properties.perm == "true") var opac = 0.5;else var opac = 0.25;
+          switch (feature.properties.Owner) {
+            case 'Hyksos':
+              return {
+                color: 'red',
+                stroke: 1,
+                opacity: 0.25,
+                fillOpacity: opac
+              };
 
-            switch (feature.properties.Owner) {
-              case 'Hyksos':
-                return {
-                  color: 'red',
-                  stroke: 1,
-                  opacity: 0.25,
-                  fillOpacity: opac
-                };
+            case 'Meshwesh':
+              return {
+                color: 'blue',
+                stroke: 1,
+                opacity: 0.25,
+                fillOpacity: opac
+              };
 
-              case 'Meshwesh':
-                return {
-                  color: 'blue',
-                  stroke: 1,
-                  opacity: 0.25,
-                  fillOpacity: opac
-                };
+            case 'Kush':
+              return {
+                color: 'green',
+                stroke: 1,
+                opacity: 0.25,
+                fillOpacity: opac
+              };
 
-              case 'Kush':
-                return {
-                  color: 'green',
-                  stroke: 1,
-                  opacity: 0.25,
-                  fillOpacity: opac
-                };
+            case 'Nobody':
+              return {
+                color: 'white',
+                stroke: 1,
+                opacity: 0.25
+              };
 
-              case 'Nobody':
-                return {
-                  color: 'white',
-                  stroke: 1,
-                  opacity: 0.25
-                };
-
-              case 'NA':
-                return {
-                  color: feature.properties.color,
-                  stroke: 1,
-                  opacity: 0.25
-                };
-            }
-          },
-          onEachFeature: function onEachFeature(feature, layer) {
-            layer.on('mouseover', function (e) {
-              if (self.regioncontrol._container.value != layer.feature.properties.name) self.regioncontrol._container.value = layer.feature.properties.name;
-              if (self.secondregioncontrol._container.value != layer.feature.properties.name) self.secondregioncontrol._container.value = layer.feature.properties.name;
-            });
+            case 'NA':
+              return {
+                color: feature.properties.color,
+                stroke: 1,
+                opacity: 0.25
+              };
           }
-        });
-        this.setdPane('regions', 250, 0.75);
-        this.dlayer.addLayer(geojsonLayer);
-      }
-
-      this.setdPane(prevpane);
-    }
-  }, {
-    key: "initIcons",
-    value: function initIcons(iconsize, iconanchor, icons, mousepopup) {
-      this.iconsize = typeof iconsize !== 'undefined' ? iconsize : [32, 32];
-      this.iconanchor = typeof iconanchor !== 'undefined' ? iconanchor : [10, 32];
-      this.icons = typeof icons !== 'undefined' ? icons : "https://static.atitd.wiki/maps/markers/marker{label}.png";
-      this.mousepopup = typeof mousepopup !== 'undefined' ? mousepopup : false;
-    }
-  }, {
-    key: "setControls",
-    value: function setControls(position, region, fullscreen, zoom, layer, measure) {
-      this.showposition = typeof position !== 'undefined' ? position : 1;
-      this.showregion = typeof region !== 'undefined' ? region : 1;
-      this.fullscreenc = typeof fullscreen !== 'undefined' ? fullscreen : 1;
-      this.zoomc = typeof zoom !== 'undefined' ? zoom : 1;
-      this.layerc = typeof layer !== 'undefined' ? layer : 1;
-      position ? this.mapID.addControl(this.positioncontrol) : this.mapID.removeControl(this.positioncontrol);
-      region ? this.mapID.addControl(this.regioncontrol) : this.mapID.removeControl(this.regioncontrol);
-      region ? this.mapID.addControl(this.secondregioncontrol) : this.mapID.removeControl(this.secondregioncontrol);
-      position ? this.mapID.addControl(this.secondpositioncontrol) : this.mapID.removeControl(this.secondpositioncontrol);
-      fullscreen ? this.mapID.addControl(this.fullscreencontrol) : this.mapID.removeControl(this.fullscreencontrol);
-      layer ? this.mapID.addControl(this.layerscontrol) : this.mapID.removeControl(this.layerscontrol);
-      measure ? this.mapID.addControl(this.mapID.measureControl) : this.mapID.removeControl(this.mapID.measureControl);
-      zoom ? this.mapID.addControl(this.mapID.zoomControl) : this.mapID.removeControl(this.mapID.zoomControl);
-    }
-  }, {
-    key: "C2LL",
-    value: function C2LL(x, y) {
-      var mapy = 0 - 0.015625 * (8192 - y);
-      var mapx = 0.015625 * ((this.tale < 6 ? 7168 : 3068) + x);
-      return new L.latLng(mapy, mapx);
-    }
-  }, {
-    key: "LL2C",
-    value: function LL2C(ll) {
-      var mapy = ll.lat / 0.015625 + 8192;
-      var mapx = ll.lng / 0.015625 - (this.tale < 6 ? 7168 : 3068);
-      return new L.Point(mapy, mapx);
-    }
-  }, {
-    key: "centerMap",
-    value: function centerMap(lat, lon) {
-      this.mapID.panTo(this.C2LL(lat, lon));
-    }
-  }, {
-    key: "sM",
-    value: function sM(icon) {
-      icon = typeof icon !== 'undefined' ? icon : "";
-      this.setMarker(icon);
-    }
-  }, {
-    key: "setMarker",
-    value: function setMarker(icon) {
-      icon = typeof icon !== 'undefined' ? icon : "";
-      this.icon = icon;
-    }
-  }, {
-    key: "dm",
-    value: function dm(lat, lon, pop) {
-      var self = this;
-
-      if (this.icon == "") {
-        iconsize = [20, 34];
-      }
-
-      var icon = this.icons.replace("{label}", this.icon);
-      var ll = this.C2LL(lat, lon);
-
-      if (pop == '') {
-        var mkr = this.mlayer.addLayer(L.marker(ll, {
-          icon: L.icon({
-            iconSize: this.iconsize,
-            iconAnchor: this.iconanchor,
-            iconUrl: icon,
-            pane: this.dpane
-          }),
-          pane: this.mpane
-        }));
-      } else {
-        var mkr = this.mlayer.addLayer(L.marker(ll, {
-          icon: L.icon({
-            iconSize: this.iconsize,
-            iconAnchor: this.iconanchor,
-            iconUrl: icon
-          }),
-          pane: this.mpane
-        }).bindPopup(pop, {
-          offset: [0, -30]
-        }));
-
-        if (this.mousepopup) {
-          mkr.on('click', function (e) {
-            self.mapID.closePopup();
-            return true;
-          });
-          mkr.on('mouseover mousemove', function (e) {
-            var hover_bubble = new L.Rrose({
-              offset: new L.Point(4, -30),
-              closeButton: false,
-              autoPan: false
-            }).setContent(pop).setLatLng(e.latlng).openOn(self.mapID);
-          });
-          mkr.on('mouseout', function (e) {
-            self.mapID.closePopup();
+        },
+        onEachFeature: function (feature, layer) {
+          layer.on('mouseover', function (e) {
+            if (self.regioncontrol._container.value != layer.feature.properties.name) self.regioncontrol._container.value = layer.feature.properties.name;
+            if (self.secondregioncontrol._container.value != layer.feature.properties.name) self.secondregioncontrol._container.value = layer.feature.properties.name;
           });
         }
-      }
+      });
+      this.setdPane('regions', 250, 0.75);
+      this.dlayer.addLayer(geojsonLayer);
     }
-  }, {
-    key: "drawOptions",
-    value: function drawOptions(stroke, color, weight, opacity, fill, fillColor, fillOpacity, dashArray, lineCap, lineJoin) {
-      this.dstroke = typeof stroke !== 'undefined' ? stroke : true;
-      this.dcolor = typeof color !== 'undefined' ? color : '#03f';
-      this.dweight = typeof weight !== 'undefined' ? weight : 5;
-      this.dopacity = typeof opacity !== 'undefined' ? opacity : 0.5;
-      this.dfill = typeof fill !== 'undefined' ? fill : true;
-      this.dfillColor = typeof fillColor !== 'undefined' ? fillColor : '#03f';
-      this.dfillOpacity = typeof fillOpacity !== 'undefined' ? fillOpacity : 0.2;
-      this.ddashArray = typeof dashArray !== 'undefined' ? dashArray : '';
-      this.dlineCap = typeof lineCap !== 'undefined' ? lineCap : '';
-      this.dlineJoin = typeof lineJoin !== 'undefined' ? lineJoin : '';
+
+    this.setdPane(prevpane);
+  }
+
+  initIcons(iconsize, iconanchor, icons, mousepopup) {
+    this.iconsize = typeof iconsize !== 'undefined' ? iconsize : [32, 32];
+    this.iconanchor = typeof iconanchor !== 'undefined' ? iconanchor : [10, 32];
+    this.icons = typeof icons !== 'undefined' ? icons : "https://static.atitd.wiki/maps/markers/marker{label}.png";
+    this.mousepopup = typeof mousepopup !== 'undefined' ? mousepopup : false;
+  }
+
+  setControls(position, region, fullscreen, zoom, layer, measure) {
+    this.showposition = typeof position !== 'undefined' ? position : 1;
+    this.showregion = typeof region !== 'undefined' ? region : 1;
+    this.fullscreenc = typeof fullscreen !== 'undefined' ? fullscreen : 1;
+    this.zoomc = typeof zoom !== 'undefined' ? zoom : 1;
+    this.layerc = typeof layer !== 'undefined' ? layer : 1;
+    position ? this.mapID.addControl(this.positioncontrol) : this.mapID.removeControl(this.positioncontrol);
+    region ? this.mapID.addControl(this.regioncontrol) : this.mapID.removeControl(this.regioncontrol);
+    region ? this.mapID.addControl(this.secondregioncontrol) : this.mapID.removeControl(this.secondregioncontrol);
+    position ? this.mapID.addControl(this.secondpositioncontrol) : this.mapID.removeControl(this.secondpositioncontrol);
+    fullscreen ? this.mapID.addControl(this.fullscreencontrol) : this.mapID.removeControl(this.fullscreencontrol);
+    layer ? this.mapID.addControl(this.layerscontrol) : this.mapID.removeControl(this.layerscontrol);
+    measure ? this.mapID.addControl(this.mapID.measureControl) : this.mapID.removeControl(this.mapID.measureControl);
+    zoom ? this.mapID.addControl(this.mapID.zoomControl) : this.mapID.removeControl(this.mapID.zoomControl);
+  }
+
+  C2LL(x, y) {
+    var mapy = 0 - 0.015625 * (8192 - y);
+    var mapx = 0.015625 * ((this.tale < 6 ? 7168 : 3068) + x);
+    return new L.latLng(mapy, mapx);
+  }
+
+  LL2C(ll) {
+    var mapy = ll.lat / 0.015625 + 8192;
+    var mapx = ll.lng / 0.015625 - (this.tale < 6 ? 7168 : 3068);
+    return new L.Point(mapy, mapx);
+  }
+
+  centerMap(lat, lon) {
+    this.mapID.panTo(this.C2LL(lat, lon));
+  }
+
+  sM(icon) {
+    icon = typeof icon !== 'undefined' ? icon : "";
+    this.setMarker(icon);
+  }
+
+  setMarker(icon) {
+    icon = typeof icon !== 'undefined' ? icon : "";
+    this.icon = icon;
+  }
+
+  dm(lat, lon, pop) {
+    var self = this;
+
+    if (this.icon == "") {
+      iconsize = [20, 34];
     }
-  }, {
-    key: "line",
-    value: function line(coords, pop) {
-      pop = typeof pop !== 'undefined' ? pop : '';
 
-      for (var i = 0; i < coords.length; ++i) {
-        coords[i] = this.C2LL(coords[i][0], coords[i][1]);
-      }
+    var icon = this.icons.replace("{label}", this.icon);
+    var ll = this.C2LL(lat, lon);
 
-      if (pop == '') this.dlayer.addLayer(L.polyline(coords, {
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        interactive: false,
-        pane: this.dpane
-      }));else this.dlayer.addLayer(L.polyline(coords, {
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        pane: this.dpane
+    if (pop == '') {
+      var mkr = this.mlayer.addLayer(L.marker(ll, {
+        icon: L.icon({
+          iconSize: this.iconsize,
+          iconAnchor: this.iconanchor,
+          iconUrl: icon,
+          pane: this.dpane
+        }),
+        pane: this.mpane
+      }));
+    } else {
+      var mkr = this.mlayer.addLayer(L.marker(ll, {
+        icon: L.icon({
+          iconSize: this.iconsize,
+          iconAnchor: this.iconanchor,
+          iconUrl: icon
+        }),
+        pane: this.mpane
       }).bindPopup(pop, {
         offset: [0, -30]
       }));
-    }
-  }, {
-    key: "poly",
-    value: function poly(coords, pop, className) {
-      pop = typeof pop !== 'undefined' ? pop : '';
 
-      for (var i = 0; i < coords.length; ++i) {
-        coords[i] = this.C2LL(coords[i][0], coords[i][1]);
+      if (this.mousepopup) {
+        mkr.on('click', function (e) {
+          self.mapID.closePopup();
+          return true;
+        });
+        mkr.on('mouseover mousemove', function (e) {
+          var hover_bubble = new L.Rrose({
+            offset: new L.Point(4, -30),
+            closeButton: false,
+            autoPan: false
+          }).setContent(pop).setLatLng(e.latlng).openOn(self.mapID);
+        });
+        mkr.on('mouseout', function (e) {
+          self.mapID.closePopup();
+        });
       }
-
-      if (pop == '') this.dlayer.addLayer(L.polygon(coords, {
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        pane: this.dpane,
-        interactive: false,
-        classname: className
-      }));else this.dlayer.addLayer(L.polygon(coords, {
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        pane: this.dpane,
-        classname: className
-      }).bindPopup(pop, {
-        offset: [0, -30]
-      }));
     }
-  }, {
-    key: "circ",
-    value: function circ(coords, rad, pop) {
-      pop = typeof pop !== 'undefined' ? pop : '';
-      coords = this.C2LL(coords[0], coords[1]);
-      if (pop == '') this.dlayer.addLayer(L.circle(coords, {
-        radius: rad * 0.015625,
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        pane: this.dpane,
-        interactive: false
-      }));else this.dlayer.addLayer(L.circle(coords, {
-        radius: rad * 0.015625,
-        stroke: this.dstroke,
-        color: this.dcolor,
-        weight: this.dweight,
-        opacity: this.dopacity,
-        fill: this.dfill,
-        fillColor: this.fillColor,
-        dashArray: this.ddashArray,
-        dlineCap: this.dlineCap,
-        dlineJoin: this.dlineJoin,
-        pane: this.dpane,
-        interactive: true
-      }).bindPopup(pop, {
-        offset: [0, -30]
-      }));
-    }
-  }]);
+  }
 
-  return eMap;
-}();
+  drawOptions(stroke, color, weight, opacity, fill, fillColor, fillOpacity, dashArray, lineCap, lineJoin) {
+    this.dstroke = typeof stroke !== 'undefined' ? stroke : true;
+    this.dcolor = typeof color !== 'undefined' ? color : '#03f';
+    this.dweight = typeof weight !== 'undefined' ? weight : 5;
+    this.dopacity = typeof opacity !== 'undefined' ? opacity : 0.5;
+    this.dfill = typeof fill !== 'undefined' ? fill : true;
+    this.dfillColor = typeof fillColor !== 'undefined' ? fillColor : '#03f';
+    this.dfillOpacity = typeof fillOpacity !== 'undefined' ? fillOpacity : 0.2;
+    this.ddashArray = typeof dashArray !== 'undefined' ? dashArray : '';
+    this.dlineCap = typeof lineCap !== 'undefined' ? lineCap : '';
+    this.dlineJoin = typeof lineJoin !== 'undefined' ? lineJoin : '';
+  }
+
+  line(coords, pop) {
+    pop = typeof pop !== 'undefined' ? pop : '';
+
+    for (var i = 0; i < coords.length; ++i) coords[i] = this.C2LL(coords[i][0], coords[i][1]);
+
+    if (pop == '') this.dlayer.addLayer(L.polyline(coords, {
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      interactive: false,
+      pane: this.dpane
+    }));else this.dlayer.addLayer(L.polyline(coords, {
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      pane: this.dpane
+    }).bindPopup(pop, {
+      offset: [0, -30]
+    }));
+  }
+
+  poly(coords, pop, className) {
+    pop = typeof pop !== 'undefined' ? pop : '';
+
+    for (var i = 0; i < coords.length; ++i) coords[i] = this.C2LL(coords[i][0], coords[i][1]);
+
+    if (pop == '') this.dlayer.addLayer(L.polygon(coords, {
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      pane: this.dpane,
+      interactive: false,
+      classname: className
+    }));else this.dlayer.addLayer(L.polygon(coords, {
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      pane: this.dpane,
+      classname: className
+    }).bindPopup(pop, {
+      offset: [0, -30]
+    }));
+  }
+
+  circ(coords, rad, pop) {
+    pop = typeof pop !== 'undefined' ? pop : '';
+    coords = this.C2LL(coords[0], coords[1]);
+    if (pop == '') this.dlayer.addLayer(L.circle(coords, {
+      radius: rad * 0.015625,
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      pane: this.dpane,
+      interactive: false
+    }));else this.dlayer.addLayer(L.circle(coords, {
+      radius: rad * 0.015625,
+      stroke: this.dstroke,
+      color: this.dcolor,
+      weight: this.dweight,
+      opacity: this.dopacity,
+      fill: this.dfill,
+      fillColor: this.fillColor,
+      dashArray: this.ddashArray,
+      dlineCap: this.dlineCap,
+      dlineJoin: this.dlineJoin,
+      pane: this.dpane,
+      interactive: true
+    }).bindPopup(pop, {
+      offset: [0, -30]
+    }));
+  }
+
+}
 
 function IsValidCoord(y, x) {
   return x > -3071 && x < 5120 && y < 8191 && y > -8191;
@@ -597,7 +559,7 @@ function IsValidCoord(y, x) {
       title: 'Full Screen',
       forceSeparateButton: false
     },
-    onAdd: function onAdd(map) {
+    onAdd: function (map) {
       var className = 'leaflet-control-zoom-fullscreen',
           container;
 
@@ -611,7 +573,7 @@ function IsValidCoord(y, x) {
 
       return container;
     },
-    _createButton: function _createButton(title, className, container, fn, context) {
+    _createButton: function (title, className, container, fn, context) {
       var link = L.DomUtil.create('a', className, container);
       link.href = '#';
       link.title = title;
@@ -620,7 +582,7 @@ function IsValidCoord(y, x) {
       L.DomEvent.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.stopPropagation).addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault).addListener(document, fullScreenApi.fullScreenEventName, this._handleEscKey, context);
       return link;
     },
-    toogleFullScreen: function toogleFullScreen() {
+    toogleFullScreen: function () {
       this._exitFired = false;
       var container = this._container;
 
@@ -647,7 +609,7 @@ function IsValidCoord(y, x) {
         this._isFullscreen = true;
       }
     },
-    _handleEscKey: function _handleEscKey() {
+    _handleEscKey: function () {
       if (!fullScreenApi.isFullScreen(this) && !this._exitFired) {
         this.fire('exitFullscreen');
         this._exitFired = true;
@@ -677,11 +639,11 @@ function IsValidCoord(y, x) {
 
   var fullScreenApi = {
     supportsFullScreen: false,
-    isFullScreen: function isFullScreen() {
+    isFullScreen: function () {
       return false;
     },
-    requestFullScreen: function requestFullScreen() {},
-    cancelFullScreen: function cancelFullScreen() {},
+    requestFullScreen: function () {},
+    cancelFullScreen: function () {},
     fullScreenEventName: '',
     prefix: ''
   },
@@ -750,7 +712,7 @@ L.Control.Measure = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  initialize: function initialize(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
     this._enabled = false;
     this._container = null;
@@ -763,7 +725,7 @@ L.Control.Measure = L.Control.extend({
     this._endPoint = null;
     this._line = null;
   },
-  onAdd: function onAdd(map) {
+  onAdd: function (map) {
     this._map = map;
 
     this._features.addTo(map);
@@ -776,7 +738,7 @@ L.Control.Measure = L.Control.extend({
     L.DomEvent.on(this._button, 'click', L.DomEvent.stopPropagation).on(this._button, 'mousedown', L.DomEvent.stopPropagation).on(this._button, 'dblclick', L.DomEvent.stopPropagation).on(this._button, 'click', L.DomEvent.preventDefault).on(this._button, 'click', this._onClick, this);
     return this._container;
   },
-  _enable: function _enable() {
+  _enable: function () {
     this._startPoint = null;
     this._endPoint = null;
     this._line = null;
@@ -789,16 +751,16 @@ L.Control.Measure = L.Control.extend({
 
     this._map.on('click', this._onMapClick, this);
   },
-  _disable: function _disable() {
+  _disable: function () {
     this._enabled = false;
     L.DomUtil.removeClass(this._button, 'leaflet-control-measure-enabled');
 
     this._map.off('click', this._onMapClick, this);
   },
-  _onClick: function _onClick() {
+  _onClick: function () {
     if (this._enabled) this._disable();else this._enable();
   },
-  _onMapClick: function _onMapClick(e) {
+  _onMapClick: function (e) {
     var marker = new L.Marker(e.latlng, {
       draggable: true
     });
@@ -833,7 +795,7 @@ L.Control.Measure = L.Control.extend({
       this._disable();
     }
   },
-  _onMarkerDrag: function _onMarkerDrag(e) {
+  _onMarkerDrag: function (e) {
     var marker = e.target;
 
     var i = this._markerList.indexOf(marker);
@@ -846,7 +808,7 @@ L.Control.Measure = L.Control.extend({
 
     if (i == 0) this._startPoint = marker.getLatLng();else if (i == this._markerList.length - 1) this._endPoint = marker.getLatLng();
   },
-  _onMarkerDragEnd: function _onMarkerDragEnd(e) {
+  _onMarkerDragEnd: function (e) {
     var ll_end = LatLngToCoord(this._endPoint);
     var ll_start = LatLngToCoord(this._startPoint);
     var distance = Math.sqrt(Math.pow(ll_start.x - ll_end.x, 2) + Math.pow(ll_start.y - ll_end.y, 2));
@@ -889,7 +851,7 @@ L.Map.addInitHook(function () {
 */
 
 L.Rrose = L.Popup.extend({
-  _initLayout: function _initLayout() {
+  _initLayout: function () {
     var prefix = 'leaflet-rrose',
         container = this._container = L.DomUtil.create('div', prefix + ' ' + this.options.className + ' leaflet-zoom-animated'),
         closeButton,
@@ -962,7 +924,7 @@ L.Rrose = L.Popup.extend({
       this._tip = L.DomUtil.create('div', prefix + '-tip' + ' ' + prefix + '-tip-' + this.options.position, this._tipContainer);
     }
   },
-  _updatePosition: function _updatePosition() {
+  _updatePosition: function () {
     var pos = this._map.latLngToLayerPoint(this._latlng),
         is3d = L.Browser.any3d,
         offset = this.options.offset;
@@ -1013,9 +975,7 @@ L.Rrose = L.Popup.extend({
     return n[i].exports;
   }
 
-  for (var o = "function" == typeof require && require, i = 0; i < r.length; i++) {
-    a(r[i]);
-  }
+  for (var o = "function" == typeof require && require, i = 0; i < r.length; i++) a(r[i]);
 
   return a;
 }({
@@ -1049,7 +1009,7 @@ L.Rrose = L.Popup.extend({
 
     function s(e) {
       var t = e && e.then;
-      return e && "object" == _typeof(e) && "function" == typeof t ? function () {
+      return e && "object" == typeof e && "function" == typeof t ? function () {
         t.apply(e, arguments);
       } : void 0;
     }
@@ -1085,7 +1045,7 @@ L.Rrose = L.Popup.extend({
     }
 
     function c(e) {
-      return _instanceof(e, this) ? e : v.resolve(new this(r), e);
+      return e instanceof this ? e : v.resolve(new this(r), e);
     }
 
     function f(e) {
@@ -1110,9 +1070,7 @@ L.Rrose = L.Popup.extend({
           o = !1;
       if (!a) return this.resolve([]);
 
-      for (var i = new Array(a), s = 0, l = -1, u = new this(r); ++l < a;) {
-        t(e[l], l);
-      }
+      for (var i = new Array(a), s = 0, l = -1, u = new this(r); ++l < a;) t(e[l], l);
 
       return u;
     }
@@ -1132,9 +1090,7 @@ L.Rrose = L.Popup.extend({
           o = !1;
       if (!a) return this.resolve([]);
 
-      for (var i = -1, s = new this(r); ++i < a;) {
-        t(e[i]);
-      }
+      for (var i = -1, s = new this(r); ++i < a;) t(e[i]);
 
       return s;
     }
@@ -1171,17 +1127,13 @@ L.Rrose = L.Popup.extend({
       if (r) l(e, r);else {
         e.state = m, e.outcome = t;
 
-        for (var a = -1, o = e.queue.length; ++a < o;) {
-          e.queue[a].callFulfilled(t);
-        }
+        for (var a = -1, o = e.queue.length; ++a < o;) e.queue[a].callFulfilled(t);
       }
       return e;
     }, v.reject = function (e, t) {
       e.state = y, e.outcome = t;
 
-      for (var n = -1, r = e.queue.length; ++n < r;) {
-        e.queue[n].callRejected(t);
-      }
+      for (var n = -1, r = e.queue.length; ++n < r;) e.queue[n].callRejected(t);
 
       return e;
     }, n.resolve = c, n.reject = f, n.all = d, n.race = h;
@@ -1196,9 +1148,7 @@ L.Rrose = L.Popup.extend({
         c = !0;
 
         for (var e, t, n = f.length; n;) {
-          for (t = f, f = [], e = -1; ++e < n;) {
-            t[e]();
-          }
+          for (t = f, f = [], e = -1; ++e < n;) t[e]();
 
           n = f.length;
         }
@@ -1219,7 +1169,7 @@ L.Rrose = L.Popup.extend({
             l = e.document.createTextNode("");
         s.observe(l, {
           characterData: !0
-        }), a = function a() {
+        }), a = function () {
           l.data = i = ++i % 2;
         };
       } else if (e.setImmediate || "undefined" == typeof e.MessageChannel) a = "document" in e && "onreadystatechange" in e.document.createElement("script") ? function () {
@@ -1231,7 +1181,7 @@ L.Rrose = L.Popup.extend({
         setTimeout(n, 0);
       };else {
         var u = new e.MessageChannel();
-        u.port1.onmessage = n, a = function a() {
+        u.port1.onmessage = n, a = function () {
           u.port2.postMessage(0);
         };
       }
@@ -1282,17 +1232,15 @@ L.Rrose = L.Popup.extend({
           dataType: "json",
           callbackParam: "callback",
           local: !1,
-          middleware: function middleware(e) {
+          middleware: function (e) {
             return e;
           }
         },
-        initialize: function initialize(e, t) {
+        initialize: function (e, t) {
           this.urls = [], e && ("string" == typeof e ? this.urls.push(e) : "function" == typeof e.pop ? this.urls = this.urls.concat(e) : (t = e, e = void 0));
           var a = n.Util.extend({}, this.defaultAJAXparams);
 
-          for (var o in t) {
-            this.defaultAJAXparams.hasOwnProperty(o) && (a[o] = t[o]);
-          }
+          for (var o in t) this.defaultAJAXparams.hasOwnProperty(o) && (a[o] = t[o]);
 
           this.ajaxParams = a, this._layers = {}, n.Util.setOptions(this, t), this.on("data:loaded", function () {
             this.filter && this.refilter(this.filter);
@@ -1304,10 +1252,10 @@ L.Rrose = L.Popup.extend({
             i.addUrl();
           });
         },
-        clearLayers: function clearLayers() {
+        clearLayers: function () {
           return this.urls = [], n.GeoJSON.prototype.clearLayers.call(this), this;
         },
-        addUrl: function addUrl(e) {
+        addUrl: function (e) {
           var t = this;
           e && ("string" == typeof e ? t.urls.push(e) : "function" == typeof e.pop && (t.urls = t.urls.concat(e)));
           var r = t.urls.length,
@@ -1332,10 +1280,10 @@ L.Rrose = L.Popup.extend({
             ++o === r && t.fire("data:loaded");
           });
         },
-        refresh: function refresh(e) {
+        refresh: function (e) {
           e = e || this.urls, this.clearLayers(), this.addUrl(e);
         },
-        refilter: function refilter(e) {
+        refilter: function (e) {
           "function" != typeof e ? (this.filter = !1, this.eachLayer(function (e) {
             e.setStyle({
               stroke: !0,
@@ -1398,7 +1346,7 @@ L.Rrose = L.Popup.extend({
 
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, 'find', {
-    value: function value(predicate) {
+    value: function (predicate) {
       // 1. Let O be ? ToObject(this value).
       if (this == null) {
         throw new TypeError('"this" is null or not defined');
