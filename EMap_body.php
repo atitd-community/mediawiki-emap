@@ -22,10 +22,10 @@ class EMap {
 			$mapID = "map_" . self::$mapIdNum;
 
 			// Parse parameters
-			// Start with tale - must be in a predefined list. Default to 8
-			$tales = array('1','2','3','4a','4b','5','6','7','8','9');
-			self::$tale = 8;
-			$tileSource = $eMapBasePath . "/maps/tale8/{z}/{x}/{y}.png";
+			// Start with tale - must be in a predefined list. Default to 10
+			$tales = array('1','2','3','4a','4b','5','6','7','8','9','10');
+			self::$tale = 10;
+			$tileSource = $eMapBasePath . "/maps/tale10/{z}/{x}/{y}.png";
 			if (isset($params['tale'])){
 				$found_key = array_search($params['tale'],$tales);
 				if($found_key !== FALSE) {
@@ -40,9 +40,11 @@ class EMap {
 			// Zoom levels
 			// Valid values for tales 1-4 are: 1-6
 			// Valid values for tales 5+ are: 1-8
+			// Valid values for tale 10 is (temporarily): 1-6
 
 			$zoom_levels = self::$tale < 5 ? array(1,2,3,4,5,6) : array(1,2,3,4,5,6,7,8);
 			$maxZoom = (self::$tale < 5 ? 6 : 8);
+			$maxZoom = (self::$tale == 10 ? 6 : $maxZoom); // Temporary
 			if (isset($params['maxZoom'])){
 				$found_key = array_search($params['maxZoom'],$zoom_levels);
 				if($found_key !== FALSE) {
