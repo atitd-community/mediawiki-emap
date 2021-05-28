@@ -1,12 +1,12 @@
 
 function CoordToLatLng(x, y, tale) {
-  tale = typeof tale !== 'undefined' ? tale : 8;
+  tale = typeof tale !== 'undefined' ? tale : 10;
   var mapy = 0 - (0.015625 * (8192 - y));
   var mapx = (0.015625 * ((tale<6 ? 7168 : 3068) + x));
   return new L.latLng(mapy, mapx);
 }
 function LatLngToCoord(ll, tale) {
-  tale = typeof tale !== 'undefined' ? tale : 8;
+  tale = typeof tale !== 'undefined' ? tale : 10;
   var mapy = (ll.lat / 0.015625) + 8192;
   var mapx = (ll.lng / 0.015625) - (tale<6 ? 7168 : 3068);
   return new L.Point(mapy, mapx);
@@ -18,12 +18,12 @@ class eMap {
 	constructor(mapID, ID, tileset, minzoom, maxzoom, tale, attrib) {
 		minzoom = typeof minzoom !== 'undefined' ? minzoom : 1;
 		maxzoom = typeof maxzoom !== 'undefined' ? maxzoom : 8;
-		attrib = typeof attrib !== 'undefined' ? attrib : "(c) Desert Nomad Games 2019";
+		attrib = typeof attrib !== 'undefined' ? attrib : "(c) Desert Nomad Games 2021";
 		this.mapID = typeof mapID !== 'undefined' ? mapID : 1;
 		var self = this;
 		this.panes = [];
 		this.dlayer = "";
-		this.tale = typeof tale !== 'undefined' ? tale : 8;
+		this.tale = typeof tale !== 'undefined' ? tale : 10;
 		this.tileset = typeof tileset !== 'undefined' ? tileset : "/t7wiki/maps/tale8/{z}/{x}/{y}.png";
 		L.tileLayer(this.tileset, {
   	      maxZoom: maxzoom,
@@ -236,8 +236,10 @@ class eMap {
 			var prevpane = 'overlay';
 		this.setdPane('regions',250, 0.75);
 		var self = this;
-		var json = "https://atitd.bpuk.org/api/t8";
+		var json = "https://atitd.bpuk.org/api/t10";
 		if(this.tale > 3){
+			if (this.tale == '10')
+				json = "https://atitd.bpuk.org/api/t10";
 			if (this.tale == '9')
 				json = "https://atitd.bpuk.org/api/t9";
 			if (this.tale == '8')
