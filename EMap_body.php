@@ -1,6 +1,5 @@
 <?php
 
-
 if ( !defined('MEDIAWIKI') )
 {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
@@ -86,7 +85,6 @@ class EMap {
 			// We don't need to use the numeric value of self::$tale any more, make it a string
 			self::$tale = "'" . self::$tale . "'";
 
-
 			$style = "";
 			$style = $style . "height: " . (isset($params['height']) ? intval($params['height']) : 512) . "px; ";
 			$style = $style . "width: " . (isset($params['width']) ? intval($params['width']) : 512) . "px; ";
@@ -122,7 +120,6 @@ class EMap {
 			return  true;
 			//return $output;
         }
-
 
 		public static function onParserAfterTidy( Parser &$parser, &$text ) {
 		$content_processed =  preg_replace_callback(
@@ -363,10 +360,7 @@ class EMap {
 			$dinst[1] = $dinst[2];
 		return $ret;
 
-
 		}
-
-
 
 }
 
@@ -397,4 +391,3 @@ function parseControl($control, $default) {
 		}
 	return $default;
 }
-?>
